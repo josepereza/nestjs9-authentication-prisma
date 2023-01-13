@@ -19,7 +19,7 @@ model User {
 
   password String
 
-  confirmPassword String
+  confirmPassword String?
 
   fullName String?
 
