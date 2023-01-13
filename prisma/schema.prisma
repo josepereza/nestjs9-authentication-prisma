@@ -19,6 +19,8 @@ model User {
 
   password String
 
+  confirmPassword String
+
   fullName String?
 
   role String @default("user")
