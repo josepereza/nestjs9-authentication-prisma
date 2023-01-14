@@ -25,5 +25,9 @@ model User {
 
   role String @default("user")
 
+  resetToken String?
+
+  tokenValidTime Int?
+
   @@map("users")
 }

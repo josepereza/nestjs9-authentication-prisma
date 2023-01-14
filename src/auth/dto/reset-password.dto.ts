@@ -8,10 +8,13 @@ import {
 } from 'class-validator';
 import { Match } from '../decorator';
 
-export class AuthDto {
+export class EmailDto {
   @IsEmail()
+  @IsNotEmpty()
   email: string;
+}
 
+export class PasswordDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
@@ -24,7 +27,4 @@ export class AuthDto {
   @IsNotEmpty()
   @Match('password', { message: 'confirm password has to match password' })
   confirmPassword: string;
-
-  @IsOptional()
-  fullName: string;
 }

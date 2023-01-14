@@ -20,7 +20,7 @@ export class MailService {
 
   //! sending confirmation emails
   async sendUserConfirmation(email: string, token: string) {
-    const url = `example.com/api/v1/auth/resetPassword?token=${token}`;
+    const url = `example.com/api/v1/auth/resetPassword/${token}`;
 
     await this.mailerService.sendMail({
       to: email,

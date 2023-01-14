@@ -4,8 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { AuthDto } from './dto';
+import { AuthDto, EmailDto } from './dto';
 import { MailService } from 'src/mail/mail.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -65,6 +66,45 @@ export class AuthService {
 
       //^ return the token
       return this.generateToken(user.id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //! forgetPassword -- sending email
+  async forgetPassword(dto: EmailDto) {
+    try {
+      //^ checking if user exist with given email
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+
+      if (!user)
+        throw new ForbiddenException('User does not exist with given email!');
+
+      //^ generate reset token
+      const token = randomBytes(12).toString('hex');
+      const hashedToken = await argon.hash(token);
+
+      //^ update user
+      await this.prisma.user.update({
+        where: {
+          email: dto.email,
+        },
+        data: {
+          resetToken: hashedToken,
+          tokenValidTime: +(Date.now() / 1000 + 15 * 60).toFixed(0),
+        },
+      });
+
+      //^ sending email
+      await this.mailservice.sendUserConfirmation(dto.email, token);
+
+      return {
+        message: 'Email sent!',
+      };
     } catch (error) {
       throw error;
     }
