@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { AuthDto, EmailDto } from './dto';
+import { AuthDto, EmailDto, PasswordDto } from './dto';
 import { MailService } from 'src/mail/mail.service';
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -86,7 +86,7 @@ export class AuthService {
 
       //^ generate reset token
       const token = randomBytes(12).toString('hex');
-      const hashedToken = await argon.hash(token);
+      const hashedToken = createHash('md5').update(token).digest('hex');
 
       //^ update user
       await this.prisma.user.update({
@@ -95,7 +95,7 @@ export class AuthService {
         },
         data: {
           resetToken: hashedToken,
-          tokenValidTime: +(Date.now() / 1000 + 15 * 60).toFixed(0),
+          tokenValidTime: Date.now() + 15 * 60 * 1000,
         },
       });
 
@@ -105,6 +105,45 @@ export class AuthService {
       return {
         message: 'Email sent!',
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //! resetPassword by given token
+  async resetPassword(token: string, dto: PasswordDto) {
+    try {
+      //^ hashing token for comparing
+      const hashedToken = createHash('md5').update(token).digest('hex');
+
+      //^ check if token valid
+      const user = await this.prisma.user.findFirst({
+        where: {
+          resetToken: hashedToken,
+          tokenValidTime: {
+            gt: Date.now() + 15 * 60 * 100,
+          },
+        },
+      });
+
+      if (!user) throw new ForbiddenException('Token expired or invalid!');
+
+      //^ hash new password
+      const hashedPassword = await argon.hash(dto.password);
+
+      //^ update user
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          password: hashedPassword,
+          resetToken: null,
+          tokenValidTime: null,
+        },
+      });
+
+      return this.generateToken(updatedUser.id);
     } catch (error) {
       throw error;
     }

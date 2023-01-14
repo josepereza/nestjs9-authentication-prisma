@@ -27,7 +27,7 @@ model User {
 
   resetToken String?
 
-  tokenValidTime Int?
+  tokenValidTime BigInt?
 
   @@map("users")
 }
