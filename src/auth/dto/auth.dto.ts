@@ -7,12 +7,7 @@ import {
 } from 'class-validator';
 import { Match } from '../decorator';
 
-export enum UserRole {
-  user,
-  admin,
-}
-
-export class SignUpDto {
+export class AuthDto {
   @IsEmail()
   email: string;
 
@@ -29,6 +24,5 @@ export class SignUpDto {
   @Match('password', { message: 'confirm password has to match password' })
   confirmPassword: string;
 
-  @IsString()
   fullName: string;
 }
