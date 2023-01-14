@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { AuthDto } from './dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private readonly mailservice: MailService,
   ) {}
 
   //! registering the user
@@ -28,6 +30,9 @@ export class AuthService {
           fullName: dto.fullName,
         },
       });
+
+      //^ send mail
+      await this.mailservice.sendUserConfirmation(user.email, dto.fullName);
 
       //^ return the token
       return this.generateToken(user.id);
