@@ -24,5 +24,6 @@ export class AuthDto {
   @Match('password', { message: 'confirm password has to match password' })
   confirmPassword: string;
 
+  @IsString()
   fullName: string;
 }

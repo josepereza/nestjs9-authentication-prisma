@@ -31,8 +31,8 @@ export class AuthService {
         },
       });
 
-      //^ send mail
-      await this.mailservice.sendUserConfirmation(user.email, dto.fullName);
+      //^ send welcome email
+      await this.mailservice.sendWelcomeMail(user.email, dto.fullName);
 
       //^ return the token
       return this.generateToken(user.id);
