@@ -81,8 +81,10 @@ Los pasos son a seguir para configurar gmail en nuestra cuenta de google son:
 * Luego pulsamos en "iniciar sesion de google" y luego en "contrase y en contraseñas de aplicaciones le damos a generar contraseña
 
 Para usar el servidor de gmail en el modulo de mail debemos de utilizar el siguiente codigo:
- "transport: 'smtps://user@gmail.com:password@smtp.gmail.com'",
- 
+```
+transport: 'smtps://user@gmail.com:password@smtp.gmail.com',
+```
+------------------------------------------- 
 ```
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
