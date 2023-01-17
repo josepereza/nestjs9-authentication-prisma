@@ -78,7 +78,7 @@ Para configurar Gmail en el módulo de correo de Nest.js, primero debe habilitar
 Los pasos son a seguir para configurar gmail en nuestra cuenta de google son:
 * Entrar en nuestra cuenta de google y click en gestionar tu cuenta de google
 * Despues pulsamos en seguridad 
-* Luego pulsamos en "iniciar sesion de google" y luego en "contrase y en contraseñas de aplicaciones le damos a generar contraseña
+* Luego en "iniciar sesion de google" hacemos click  en  contraseñas de aplicaciones y despues le damos a generar contraseña
 
 Para usar el servidor de gmail en el modulo de mail debemos de utilizar el siguiente codigo:
 ```
