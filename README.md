@@ -72,6 +72,47 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 ## Instrucciones
+
+### mail
+Para configurar Gmail en el módulo de correo de Nest.js, primero debe habilitar el acceso de aplicaciones menos seguras en su cuenta de Gmail.
+Los pasos son a seguir para configurar gmail en nuestra cuenta de google son:
+* Entrar en nuestra cuenta de google y click en gestionar tu cuenta de google
+* Despues pulsamos en seguridad 
+* Luego pulsamos en "iniciar sesion de google" y luego en "contrase y en contraseñas de aplicaciones le damos a generar contraseña
+
+Para usar el servidor de gmail en el modulo de mail debemos de utilizar el siguiente codigo:
+ "transport: 'smtps://user@gmail.com:password@smtp.gmail.com'",
+ 
+```
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { Module } from '@nestjs/common';
+import { MailService } from './mail.service';
+import { join } from 'path';
+
+@Module({
+  imports: [
+    MailerModule.forRoot({
+      transport: 'smtps://josepereza66@gmail.com:nj7mqjznufgquog@smtp.gmail.com',
+      defaults: {
+        from: '"No Reply" <noreply@example.com>',
+      },
+      template: {
+        dir: join(__dirname, 'templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+  ],
+  providers: [MailService],
+  exports: [MailService],
+})
+export class MailModule {}
+
+```
+
   ### Para desarrollo ejecutamos
           
          ```
