@@ -114,9 +114,57 @@ import { join } from 'path';
 export class MailModule {}
 
 ```
+### Tutorial de MailerModule
+El módulo MailerModule de Nest.js es una forma fácil de integrar Nodemailer en su aplicación Nest.js.
 
-  ### Para desarrollo ejecutamos
-          
+Para utilizar MailerModule, primero debe instalarlo en su proyecto utilizando npm:
+  
+  ```
+npm install @nestjs-modules/mailer
+```
+Luego, importe MailerModule en su archivo de módulo principal (generalmente app.module.ts) y configure sus detalles de correo electrónico en el objeto de configuración. Por ejemplo, si desea enviar correos electrónicos desde una cuenta de Gmail:
+```
+import { MailerModule } from '@nestjs-modules/mailer';
+
+@Module({
+  imports: [
+    MailerModule.forRoot({
+      transport: 'smtps://youremail@gmail.com:yourpassword@smtp.gmail.com',
+      defaults: {
+        from:'"nest-modules" <modules@nestjs.com>',
+      },
+    }),
+  ],
+})
+export class AppModule {}
+
+
+```
+Una vez configurado MailerModule, puedes inyectar el servicio de correo en cualquier controlador o servicio que necesite enviar correos electrónicos.
+
+```
+import { Injectable, Inject } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
+
+@Injectable()
+export class AppService {
+  constructor(private readonly mailerService: MailerService) {}
+
+  sendMail() {
+    this.mailerService.sendMail({
+      to: 'recipient@example.com',
+      subject: 'Test',
+      text: 'Hello world!',
+    });
+  }
+}
+
+
+```
+En resumen, utilizar MailerModule de Nest.js es una forma fácil y rápida de configurar y utilizar Nodemailer en su aplicación Nest.js. Solo debes importar el módulo, configurar tus detalles de correo electrónico y luego inyectar el servicio de correo donde sea necesario en su aplicación. No olvides permitir el uso de aplicaciones menos seguras en tu cuenta de gmail si estas usando un servicio de correo como gmail.
+
+ ### Para desarrollo ejecutamos
+
          ```
          C:\Users\josep\node\my-blog>npx ts-node src/index.ts
          ```
